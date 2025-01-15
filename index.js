@@ -1,4 +1,7 @@
 const express = require('express')
+const {PrismaClient} = require('@prisma/client')
+
+const prisma = new PrismaClient()
 const app = express()
 app.use(express.json())
 
@@ -11,21 +14,28 @@ app.get("/users", (req, res) => {
 })
 
 // Rota para criar um usuário
-app.post("/users", (req, res) => {
+app.post("/users", async (req, res) => {        //acrescento async , assincrona, vai esperar o banco de dados confirmar para continuar
     const { name, email } = req.body;
 
     if(!name || !email) {
         return res.status(400).json({error: "Name e email são obrigatórios"})
     }
 
-    const newUser = {
-        id: nextId++,
-        name: name,
-        email: email
-    }
+    //const newUser = {
+    //    id: nextId++,
+    //    name: name,
+    //    email: email
+    //}
 
-    users.push(newUser)
-    res.status(201).json(newUser)
+    /// users.push(newUser) vamos retirar esta parte pois vamos salvar direto no banco de dados
+    const user = await prisma.user.create({
+        data:{
+            name,
+            email
+        }
+    })
+
+    res.status(201).json(user)
 })
 
 // Rota para busca um usuário pelo ID
@@ -81,3 +91,5 @@ app.put("/user/:id", (req, res) => {
 app.listen(3000, () => {
     console.log("Server is running on port 3000")
 })
+
+/// comando para rodar aplicação automaticamente após qualquer alteração no código: npx nodemon index.js
