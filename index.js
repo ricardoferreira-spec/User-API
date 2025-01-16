@@ -1,9 +1,11 @@
 const express = require('express')
 const {PrismaClient} = require('@prisma/client')
+const cors = require("cors")
 
 const prisma = new PrismaClient()
 const app = express()
 app.use(express.json())
+app.use(cors())
 
 //let users = [] // não precisamos mais destas variaveis, pois alteramos para banco de dados
 //let nextId = 1 // não precisamos mais destas variaveis, pois alteramos para banco de dados
@@ -117,6 +119,8 @@ app.put("/user/:id", async (req, res) => {              //async porque banco ass
 app.listen(3000, () => {
     console.log("Server is running on port 3000")
 })
+
+
 
 /// comando para rodar aplicação automaticamente após qualquer alteração no código: npx nodemon index.js
 /// 
